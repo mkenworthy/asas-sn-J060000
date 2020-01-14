@@ -1,6 +1,8 @@
 # asas-sn-J060000
 Light curve analysis of the dimming star ASAS-SN-J060000.76-310027.83 as reported in [ATel #13346](http://www.astronomerstelegram.org/?read=13346) - see the Jupyter notebook with the analysis.
 
+ASASSN-V J060000.76-310027.8
+
 Data downloaded from the ASAS-SN web pages.
 
 "ASAS-SN Discovery of an Unusual, Rapidly Fading Star"
