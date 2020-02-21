@@ -41,7 +41,7 @@ def log_likelihood(theta, x, y, yerr, t_infl):
     return  -0.5 * np.sum((y - model)**2 / sigma2 + np.log(sigma2))
 
 
-def snakemcee(x, y, y_err, xmodel, ymodel):
+def snakemcee(x, y, y_err, xmodel, ymodel, nwalk=32, niters=5000, progress=True):
     import emcee
 
     def log_prior(theta):
@@ -57,11 +57,11 @@ def snakemcee(x, y, y_err, xmodel, ymodel):
         return lp + log_likelihood(theta, x, y, yerr, t_infl)
 
     # default is 32 walkers and 1e-2 error on their starting position
-    pos = ymodel + 1e-2 * np.random.randn(32, ymodel.size)
+    pos = ymodel + 1e-1 * np.random.randn(nwalk, ymodel.size)
     nwalkers, ndim = pos.shape
 
     sampler = emcee.EnsembleSampler(nwalkers, ndim, log_probability, args=(x, y, y_err, xmodel))
-    sampler.run_mcmc(pos, 5000, progress=True);
+    sampler.run_mcmc(pos, niters, progress=progress);
 
     return sampler
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
     
     # make a test data set
 
-    time = np.linspace(58000, 58099.5, 201)
+    time = np.linspace(58000, 58099.5, 401)
 
     t_inflexion = np.linspace(58000,58100, 20)
     t_inflexion = t_inflexion + np.random.uniform(0,5,size=20)
@@ -101,8 +101,8 @@ if __name__ == '__main__':
 
     # make a test data set
 
-    N = 101
-    n_inflex = 12
+    N = 501
+    n_inflex = 10
     t = np.linspace(58000, 58099.5, N)
     np.random.seed(77)
     

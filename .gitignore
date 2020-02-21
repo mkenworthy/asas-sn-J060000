@@ -1,3 +1,14 @@
+ASASSNV_J06*.pdf
+data/aavso/aavsoda*
+data/asassn/light_curve_*
+old/*
+*/old/*
+*/*/old/*
+*~
+data/salt/pyraf*
+.DS_Store
+
+
 *.fits.fz
 # Byte-compiled / optimized / DLL files
 __pycache__/
