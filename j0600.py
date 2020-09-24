@@ -40,7 +40,7 @@ def j0600():
 
     
     # aavso
-    aavso_file = 'data/aavso/aavsodata_5f49f94e89052.txt'
+    aavso_file = 'data/aavso/aavsodata_5f6ced771bad8.txt'
     t = ascii.read(aavso_file)
 
     t['MJD'] = t['JD'] - 2400000.5
