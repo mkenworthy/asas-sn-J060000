@@ -4,7 +4,6 @@ def j0600():
     from astropy.table import Table, vstack
     from astropy.io import ascii
     from pathlib import Path
-
     
     dm = Table(
           dtype=('U8', 'f8', 'f8', 'f8', 'f8',  'f8', 'f8', 'f8', 'f8', 'f8', 'f8'),    meta={'name': 'delta magnitude table for Observers and J0600'},
@@ -12,9 +11,10 @@ def j0600():
 
     #                      B     V     R     I     SI    SR    gp    ip    rp  
     dm.add_row(['DFS',    0.2,  0.10, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
+    dm.add_row(['SDM',    0.0,  0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
     dm.add_row(['GSA',    2.30, 0.00, 0.25, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
     dm.add_row(['HMB',    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
-    dm.add_row(['MAK',    0.00,-0.20, 0.00,-0.70, 0.00, 0.00, -0.03,-1.00, 0.00, 0.00])
+    dm.add_row(['MAK',    0.00,-0.20, 0.00,-0.70, 0.00, 0.00,-0.03,-1.00, 0.00, 0.00])
     dm.add_row(['MLF',    0.00, 0.00, 0.10, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
     dm.add_row(['NLX',    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
     dm.add_row(['TTG',    0.00, 0.10, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
@@ -22,9 +22,9 @@ def j0600():
     dm.add_row(['ASASSN', 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
     dm.add_row(['MECK',   0.00, 0.00, 0.00, 0.00, 0.00, 0.00,-0.65,-0.42, 0.00, 0.00])
     dm.add_row(['EVR',    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.20,-0.00, 0.00, 0.00])
-    dm.add_row(['POBS',  17.10,16.57,16.22, 15.78,0.00, 0.00, 0.20,-0.00, 0.00, 0.00])
-    dm.add_row(['ASTEP',  0.00,13.620,13.22,12.40, 0.00, 0.00, 0.20,-0.00, 0.00, 0.00])
-# bigger numbers moves the points downwards
+    dm.add_row(['POBS',  11.20,10.65,10.41,10.02, 0.00, 0.00, 0.20,-0.00, 0.00, 0.00])
+    dm.add_row(['ASTEP',  0.00,13.620,13.30,12.40,0.00, 0.00, 0.20,-0.00, 0.00, 0.00])
+# bigger numbers moves the points downwards 15.7 but we want 15.4 if you reduce the offse
 
     outf = 'J0600_all.ecsv'
     my_file = Path(outf)
@@ -37,10 +37,9 @@ def j0600():
 
     # if it does not exist, make it
     print('{} does not exist. Reading in all the individual photometry files.'.format(outf))
-
     
     # aavso
-    aavso_file = 'data/aavso/aavsodata_5f6ced771bad8.txt'
+    aavso_file = 'data/aavso/aavsodata_5ff5552e877da.txt'
     t = ascii.read(aavso_file)
 
     t['MJD'] = t['JD'] - 2400000.5
@@ -57,7 +56,6 @@ def j0600():
     t['Band'][np.where(t['Band']=='SI')] = 'ip'
     t['Band'][np.where(t['Band']=='SR')] = 'rp'
 
-
     # add a corrected magnitude column
     t['deltamag']= 0.00
 
@@ -65,9 +63,8 @@ def j0600():
         ob = row['Observer Code']
         ban = row['Band']
         row['deltamag'] = dm[np.where(dm['Obs']==ob)][ban]
-        
-    t['Magcorr'] = t['Magnitude'] + t['deltamag']
 
+    t['Magcorr'] = t['Magnitude'] + t['deltamag']
 
     print('Writing out {}.'.format(outf))
     t.write(outf, format='ascii.ecsv', overwrite=True)
@@ -81,7 +78,7 @@ if __name__ == '__main__':
     from astropy.time import Time
 
     params = {'legend.fontsize': 'x-large',
-              'figure.figsize': (12, 5),
+              'figure.figsize': (12, 14),
              'axes.labelsize': 'x-large',
              'axes.titlesize':'x-large',
              'xtick.labelsize':'x-large',
@@ -100,7 +97,7 @@ if __name__ == '__main__':
     #plt.vlines(salt_epoch, 15.15,14.00, linestyle='dotted', color='red')
 
     (t, dm) = j0600()
-    
+
     # reject ones with large errors
     t = t[t['Uncertainty']<0.05]
 
@@ -116,7 +113,7 @@ if __name__ == '__main__':
     print(t_by_observer.groups.keys)
 
     mybands = ('B','gp','V','R','I','ip') # ordered bands to plot
-    #mybands = ('B','gp','I') # ordered bands to plot
+   # mybands = ('B','gp','R') # ordered bands to plot
 
     mag0 = {'U':14.0,'gp':14.2, 'B':14.88, 'V':13.615, 'R':12.887, 'I':12.25, 'ip':12.25}
 
@@ -128,8 +125,9 @@ if __name__ == '__main__':
     t_min = 58740
     t_max = now.mjd
 
-    fig, axes = plt.subplots(n_bands, 1, figsize=(10, 16), sharex=True) 
+    fig, axes = plt.subplots(n_bands, 1, figsize=(10, 10), sharex=True) 
     fig.subplots_adjust(hspace=0.05, wspace=0.05)
+    print('got here')
 
     for (ax, band) in zip(axes, mybands): # loop through all the bands we want to plot
             print('current band is {}'.format(band))
@@ -170,6 +168,6 @@ if __name__ == '__main__':
     fig.suptitle('J0600 Photometry', fontsize='x-large')
 
     out = 'ASASSNV_J0600_MULTI_{:.1f}.pdf'.format(now.mjd)
-#    plt.draw()
-#    plt.show()
+    plt.draw()
+    plt.show()
     plt.savefig(out,bbox_inches='tight')
