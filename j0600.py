@@ -17,12 +17,12 @@ def j0600():
     dm.add_row(['MAK',    0.00,-0.20, 0.00,-0.70, 0.00, 0.00,-0.03,-1.00, 0.00, 0.00])
     dm.add_row(['MLF',    0.00, 0.00, 0.10, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
     dm.add_row(['NLX',    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
-    dm.add_row(['TTG',    0.00, 0.10, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
+    dm.add_row(['TTG',    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
     dm.add_row(['VARA'  , 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00,-0.40, 0.00, 0.00])
     dm.add_row(['ASASSN', 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00])
     dm.add_row(['MECK',   0.00, 0.00, 0.00, 0.00, 0.00, 0.00,-0.65,-0.42, 0.00, 0.00])
     dm.add_row(['EVR',    0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.20,-0.00, 0.00, 0.00])
-    dm.add_row(['POBS',  11.20,10.65,10.41,10.02, 0.00, 0.00, 0.20,-0.00, 0.00, 0.00])
+    dm.add_row(['POBS',  11.20,10.75,10.41,10.02, 0.00, 0.00, 0.20,-0.00, 0.00, 0.00])
     dm.add_row(['ASTEP',  0.00,13.620,13.30,12.40,0.00, 0.00, 0.20,-0.00, 0.00, 0.00])
 # bigger numbers moves the points downwards 15.7 but we want 15.4 if you reduce the offse
 
@@ -39,7 +39,7 @@ def j0600():
     print('{} does not exist. Reading in all the individual photometry files.'.format(outf))
     
     # aavso
-    aavso_file = 'data/aavso/aavsodata_5ff5552e877da.txt'
+    aavso_file = 'data/aavso/aavsodata_600aa01c702ba.txt'
     t = ascii.read(aavso_file)
 
     t['MJD'] = t['JD'] - 2400000.5
@@ -53,9 +53,12 @@ def j0600():
     t.sort('MJD')
     
     # g should be renamed to gp
+    t['Band'][np.where(t['Band']=='g')] = 'gp' # for AAVSO psfsub 
+
     t['Band'][np.where(t['Band']=='SI')] = 'ip'
     t['Band'][np.where(t['Band']=='SR')] = 'rp'
 
+    print('Applying deltamag corrections...')
     # add a corrected magnitude column
     t['deltamag']= 0.00
 
@@ -113,7 +116,7 @@ if __name__ == '__main__':
     print(t_by_observer.groups.keys)
 
     mybands = ('B','gp','V','R','I','ip') # ordered bands to plot
-   # mybands = ('B','gp','R') # ordered bands to plot
+    mybands = ('B','gp','V','R','I') # ordered bands to plot
 
     mag0 = {'U':14.0,'gp':14.2, 'B':14.88, 'V':13.615, 'R':12.887, 'I':12.25, 'ip':12.25}
 
@@ -127,7 +130,6 @@ if __name__ == '__main__':
 
     fig, axes = plt.subplots(n_bands, 1, figsize=(10, 10), sharex=True) 
     fig.subplots_adjust(hspace=0.05, wspace=0.05)
-    print('got here')
 
     for (ax, band) in zip(axes, mybands): # loop through all the bands we want to plot
             print('current band is {}'.format(band))
@@ -154,7 +156,7 @@ if __name__ == '__main__':
             ax.set_ylim(mag0[band]+0.9, mag0[band]-0.1)
             
             # add legend with Observer names on the left
-            ax.legend(loc='lower left')
+            ax.legend(loc='lower left', prop={'size': 6})
 
     #        ax.plot(c['MJD'],c['g']-mag0['g']+mag0[band], color='grey')
     #        ax.plot(c['MJD'],(c['g']-mag0['g'])*(band_wlen['g']/band_wlen[band])+mag0[band], color='red')
@@ -169,5 +171,5 @@ if __name__ == '__main__':
 
     out = 'ASASSNV_J0600_MULTI_{:.1f}.pdf'.format(now.mjd)
     plt.draw()
-    plt.show()
     plt.savefig(out,bbox_inches='tight')
+    plt.show()
