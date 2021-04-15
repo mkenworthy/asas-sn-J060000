@@ -39,7 +39,7 @@ def j0600():
     print('{} does not exist. Reading in all the individual photometry files.'.format(outf))
     
     # aavso
-    aavso_file = 'data/aavso/aavsodata_600aa01c702ba.txt'
+    aavso_file = 'data/aavso/aavsodata_60717eb4c16c9.txt'
     t = ascii.read(aavso_file)
 
     t['MJD'] = t['JD'] - 2400000.5
