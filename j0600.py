@@ -39,7 +39,7 @@ def j0600():
     print('{} does not exist. Reading in all the individual photometry files.'.format(outf))
     
     # aavso
-    aavso_file = 'data/aavso/aavsodata_60717eb4c16c9.txt'
+    aavso_file = 'data/aavso/aavsodata_60c8aa4901f88.txt'
     t = ascii.read(aavso_file)
 
     t['MJD'] = t['JD'] - 2400000.5
@@ -118,7 +118,7 @@ if __name__ == '__main__':
     mybands = ('B','gp','V','R','I','ip') # ordered bands to plot
     mybands = ('B','gp','V','R','I') # ordered bands to plot
 
-    mag0 = {'U':14.0,'gp':14.2, 'B':14.88, 'V':13.615, 'R':12.887, 'I':12.25, 'ip':12.25}
+    mag0 = {'U':14.0,'gp':14.2, 'B':14.78, 'V':13.615, 'R':12.887, 'I':12.25, 'ip':12.25}
 
     band_wlen = {'U':400, 'gp':475, 'B':445, 'V':551, 'R':658, 'I':806, 'ip':769.8}
     band_color = {'U':'blue', 'gp':'purple', 'B':'blue', 'V':'green', 'R':'red', 'I':'brown','ip':'brown'}
